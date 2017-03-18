@@ -69,7 +69,7 @@ public class HSSource {
     private static final String HELPSTACK_DRAFT = "draft";
 	
     private static HSSource singletonInstance = null;
-    
+    private static DiagnosisDecorator singletonDiagnosisDecorator;
     /**
     *
     * @param context
@@ -103,6 +103,10 @@ public class HSSource {
 		setGear(HSHelpStack.getInstance(context).getGear());
 		mRequestQueue = HSHelpStack.getInstance(context).getRequestQueue();
 		refreshFieldsFromCache();
+	}
+
+	public static void setSingletonDiagnosisDecorator(DiagnosisDecorator singletonDiagnosisDecorator) {
+		HSSource.singletonDiagnosisDecorator = singletonDiagnosisDecorator;
 	}
 
 	public void requestKBArticle(String cancelTag, HSKBItem section, OnFetchedArraySuccessListener success, ErrorListener errorListener ) {
@@ -335,7 +339,9 @@ public class HSSource {
 		} catch (NameNotFoundException e) {
 			builder.append("NA");
 		}
-		
+		if (singletonDiagnosisDecorator != null) {
+			singletonDiagnosisDecorator.call(builder);
+		}
 		return builder.toString();
 	}
 	
